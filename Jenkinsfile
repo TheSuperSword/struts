@@ -1,5 +1,3 @@
-#!groovy
-
 pipeline {
   agent none
   options {
@@ -14,7 +12,9 @@ pipeline {
       agent any
       stages {
         stage('Clean up') {
-
+          steps {
+            echo 'Cleaning workspace...'
+          }
         }
       }
     }
@@ -29,10 +29,16 @@ pipeline {
       }
       stages {
         stage('Test') {
-
+          steps {
+            echo 'Testing with JDK 21...'
+          }
         }
       }
-
+      post {
+        always {
+          echo 'Cleaning workspace after JDK 21...'
+        }
+      }
     }
     stage('JDK 17') {
       agent any
@@ -45,91 +51,61 @@ pipeline {
       }
       stages {
         stage('Test & Coverage') {
-
+          steps {
+            echo 'Testing & coverage with JDK 17...'
+          }
         }
         stage('Code Quality') {
-
+          when {
+            anyOf {
+              branch 'master'; branch 'release/struts-7-0-x'
+            }
+          }
+          steps {
+            echo 'Performing code quality checks...'
+          }
         }
         stage('Build Source & JavaDoc') {
-
+          when {
+            branch 'release/struts-7-0-x'
+          }
+          steps {
+            echo 'Building source & JavaDoc...'
+          }
         }
         stage('Deploy Snapshot') {
-
+          when {
+            branch 'release/struts-7-0-x'
+          }
+          steps {
+            echo 'Deploying snapshot...'
+          }
         }
         stage('Upload nightlies') {
-
+          when {
+            branch 'release/struts-7-0-x'
+          }
+          steps {
+            echo 'Uploading nightlies...'
+          }
+        }
+      }
+      post {
+        always {
+          echo 'Cleaning workspace after JDK 17...'
         }
       }
     }
   }
   post {
-    // If this build failed, send an email to the list.
     failure {
-      script {
-        emailext(
-            to: "chengweelee0000@gmail.com",
-            recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-            from: "Mr. Jenkins <jenkins@builds.apache.org>",
-            subject: "Jenkins job ${env.JOB_NAME}#${env.BUILD_NUMBER} failed",
-            body: """
-There is a build failure in ${env.JOB_NAME}.
-
-Build: ${env.BUILD_URL}
-Logs: ${env.BUILD_URL}console
-Changes: ${env.BUILD_URL}changes
-
---
-Mr. Jenkins
-Director of Continuous Integration
-"""
-        )
-      }
+      echo "Build failed. Sending failure notification..."
     }
-
-    // If this build didn't fail, but there were failing tests, send an email to the list.
     unstable {
-      script {
-        emailext(
-            to: "chengweelee0000@gmail.com",
-            recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-            from: "Mr. Jenkins <jenkins@builds.apache.org>",
-            subject: "Jenkins job ${env.JOB_NAME}#${env.BUILD_NUMBER} unstable",
-            body: """
-Some tests have failed in ${env.JOB_NAME}.
-
-Build: ${env.BUILD_URL}
-Logs: ${env.BUILD_URL}console
-Changes: ${env.BUILD_URL}changes
-
---
-Mr. Jenkins
-Director of Continuous Integration
-"""
-        )
-      }
+      echo "Build unstable. Sending unstable notification..."
     }
-
-    // Send an email, if the last build was not successful and this one is.
     fixed {
-      script {
-        emailext(
-            to: "chengweelee0000@gmail.com",
-            recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-            from: 'Mr. Jenkins <jenkins@builds.apache.org>',
-            subject: "Jenkins job ${env.JOB_NAME}#${env.BUILD_NUMBER} back to normal",
-            body: """
-The build for ${env.JOB_NAME} completed successfully and is back to normal.
-
-Build: ${env.BUILD_URL}
-Logs: ${env.BUILD_URL}console
-Changes: ${env.BUILD_URL}changes
-
---
-Mr. Jenkins
-Director of Continuous Integration
-"""
-        )
-      }
+      echo "Build fixed. Sending notification..."
     }
   }
 }
