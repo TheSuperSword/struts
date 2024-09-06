@@ -56,35 +56,21 @@ pipeline {
           }
         }
         stage('Code Quality') {
-          when {
-            anyOf {
-              branch 'master'; branch 'release/struts-7-0-x'
-            }
-          }
           steps {
             echo 'Performing code quality checks...'
           }
         }
         stage('Build Source & JavaDoc') {
-          when {
-            branch 'release/struts-7-0-x'
-          }
           steps {
             echo 'Building source & JavaDoc...'
           }
         }
         stage('Deploy Snapshot') {
-          when {
-            branch 'release/struts-7-0-x'
-          }
           steps {
             echo 'Deploying snapshot...'
           }
         }
         stage('Upload nightlies') {
-          when {
-            branch 'release/struts-7-0-x'
-          }
           steps {
             echo 'Uploading nightlies...'
           }
