@@ -15,7 +15,7 @@ pipeline {
   stages {
     stage('Prepare') {
       agent {
-        label 'ubuntu'
+        label 'Built-In Node'
       }
       stages {
         stage('Clean up') {
@@ -27,7 +27,7 @@ pipeline {
     }
     stage('JDK 21') {
       agent {
-        label 'ubuntu'
+        label 'Built-In Node'
       }
       tools {
         jdk 'jdk_21_latest'
@@ -57,7 +57,7 @@ pipeline {
     }
     stage('JDK 17') {
       agent {
-        label 'ubuntu'
+        label 'Built-In Node'
       }
       tools {
         jdk 'jdk_17_latest'
@@ -142,7 +142,7 @@ pipeline {
     }
     stage('JDK 8') {
       agent {
-        label 'ubuntu'
+        label 'Built-In Node'
       }
       tools {
         jdk 'jdk_1.8_latest'
