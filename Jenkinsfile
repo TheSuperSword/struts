@@ -14,9 +14,7 @@ pipeline {
   }
   stages {
     stage('Prepare') {
-      agent {
-        label 'Built-In Node'
-      }
+      agent any
       stages {
         stage('Clean up') {
           steps {
@@ -26,9 +24,7 @@ pipeline {
       }
     }
     stage('JDK 21') {
-      agent {
-        label 'Built-In Node'
-      }
+      agent any
       tools {
         jdk 'jdk_21_latest'
         maven 'maven_3_latest'
@@ -56,9 +52,7 @@ pipeline {
       }
     }
     stage('JDK 17') {
-      agent {
-        label 'Built-In Node'
-      }
+      agent any
       tools {
         jdk 'jdk_17_latest'
         maven 'maven_3_latest'
@@ -141,9 +135,7 @@ pipeline {
       }
     }
     stage('JDK 8') {
-      agent {
-        label 'Built-In Node'
-      }
+      agent any
       tools {
         jdk 'jdk_1.8_latest'
         maven 'maven_3_latest'
