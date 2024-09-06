@@ -76,7 +76,9 @@ pipeline {
             }
           }
           steps {
+            withCredentials([string(credentialsId: 'asf-struts-sonarcloud', variable: 'SONARCLOUD_TOKEN')]) {
               sh './mvnw -B -Pcoverage -DskipAssembly -Dsonar.login=${SONARCLOUD_TOKEN} verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --no-transfer-progress'
+            }
           }
         }
         stage('Build Source & JavaDoc') {
@@ -95,7 +97,9 @@ pipeline {
             branch 'release/struts-7-0-x'
           }
           steps {
+            withCredentials([file(credentialsId: 'lukaszlenart-repository-access-token', variable: 'CUSTOM_SETTINGS')]) {
               sh './mvnw -s \${CUSTOM_SETTINGS} deploy -DskipTests -DskipAssembly --no-transfer-progress'
+            }
           }
         }
         stage('Upload nightlies') {
@@ -169,7 +173,9 @@ pipeline {
             branch 'master'
           }
           steps {
+            withCredentials([file(credentialsId: 'lukaszlenart-repository-access-token', variable: 'CUSTOM_SETTINGS')]) {
               sh './mvnw -s \${CUSTOM_SETTINGS} deploy -DskipTests -DskipAssembly --no-transfer-progress'
+            }
           }
         }
         stage('Upload nightlies') {
@@ -272,4 +278,3 @@ Director of Continuous Integration
     }
   }
 }
-
