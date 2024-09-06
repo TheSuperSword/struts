@@ -12,6 +12,14 @@ pipeline {
   triggers {
     pollSCM 'H/15 * * * *'
   }
+    stages {
+        stage('Print Environment') {
+            steps {
+                sh 'printenv' // Linux/Unix
+                bat 'set'     // Windows
+            }
+        }
+    }
   stages {
     stage('Prepare') {
       agent any
